@@ -1,33 +1,62 @@
-// In src/app.js add this code:
 const express = require('express');
 const { Cat } = require('./models');
 
 const app = express();
 
-// we expect to have to parse json from request bodies, 
-// so we need the JSON middleware
 app.use(express.json());
 
-// we will put our routes and controller functions here
-
 app.post('/cats',async (req, res) => {
-const cat = await Cat.create(req.body)
-  res.status(201).json(cat);
+    await Cat.create(req.body)
+    .then((cat) => res.status(201).json(cat))
+    .catch((err) => {
+        console.error('error', err);
+        res.status(400).json({ error: 'Bad Request' });
+    });
 });
 
 app.get('/cats',async (req, res) => {
-    const cat = await Cat.findAll({ where: req.query })
-      res.status(200).json(cat);
+    await Cat.findAll({ where: req.query })
+    .then((cat) => res.status(201).json(cat))
+    .catch((err) => {
+        console.error('error', err);
+        res.status(400).json({ error: 'Bad Request' });
     });
+});
 
 app.get('/cats/:catId',async (req, res) => {
-    const cat = await Cat.findByPk(req.params.catId)
-        res.status(200).json(cat);
+    await Cat.findByPk(req.params.catId)
+    .then((cat) => res.status(201).json(cat))
+    .catch((err) => {
+        console.error('error', err);
+        res.status(400).json({ error: 'Bad Request' });
     });
+});
 
 app.patch('/cats/:catId',async (req, res) => {
-    const cat = await Cat.update(req.body, { where: { id: req.params.catId } })
-        res.status(200).json(cat);
+    await Cat.update(req.body, { where: { id: req.params.catId } })
+    .then((cat) => res.status(201).json(cat))
+    .catch((err) => {
+        console.error('error', err);
+        res.status(400).json({ error: 'Bad Request' });
     });
+});
+
+app.patch('/feeds/cats/:catId',async (req, res) => {
+    await Cat.update({ lastFed: new Date()}, { where: { id: req.params.catId }})
+    .then((cat) => res.status(201).json(cat))
+    .catch((err) => {
+        console.error('error', err);
+        res.status(400).json({ error: 'Bad Request' });
+    });
+});   
+
+app.delete('/cats/:catId',async (req, res) => {
+    await Cat.destroy({ where: { id: req.params.catId }})
+    .then((cat) => res.status(201).json(cat))
+    .catch((err) => {
+        console.error('error', err);
+        res.status(400).json({ error: 'Bad Request' });
+    });
+});   
 
 module.exports = app;

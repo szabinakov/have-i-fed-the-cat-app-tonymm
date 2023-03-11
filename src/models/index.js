@@ -1,4 +1,3 @@
-// In models/index.js add this code:
 const Sequelize = require('sequelize');
 const CatModel = require('./cats');
 
@@ -11,9 +10,7 @@ const setUpDatabase = () => {
 
     const Cat = CatModel(connection, Sequelize);
     connection.sync({alter: true});
-
     return {Cat};
-
-}
+};
 
 module.exports = setUpDatabase();
